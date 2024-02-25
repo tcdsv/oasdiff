@@ -46,8 +46,14 @@ func runDelta(flags Flags, stdout io.Writer) (bool, *ReturnError) {
 	for _, v := range result.Discovered {
 		_, _ = fmt.Fprintf(stdout, "%s\n", v)
 	}
-	fmt.Fprintf(stdout, "removed: %v\n", result.Removed)
-	fmt.Fprintf(stdout, "added: %v\n", result.Added)
+	_, _ = fmt.Fprintf(stdout, "removed:\n")
+	for _, v := range result.Removed {
+		_, _ = fmt.Fprintf(stdout, "%s\n", v)
+	}
+	_, _ = fmt.Fprintf(stdout, "added:\n")
+	for _, v := range result.Added {
+		_, _ = fmt.Fprintf(stdout, "%s\n", v)
+	}
 	// _, _ = fmt.Fprintf(stdout, "%g\n", delta.Get(flags.getAsymmetric(), diffResult.diffReport))
 
 	return false, nil
