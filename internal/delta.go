@@ -41,8 +41,13 @@ func runDelta(flags Flags, stdout io.Writer) (bool, *ReturnError) {
 	labelEndpoints := getEndpoints(diffResult.specInfoPair.Base.Spec)
 	generatedEndpoints := getEndpoints(diffResult.specInfoPair.Revision.Spec)
 	result := delta2.Get(labelEndpoints, generatedEndpoints)
-	_, _ = fmt.Fprintf(stdout, "score: %g\ndiscovered: %v\nmissing: %v\nwrong: %v\n", result.Score, result.Discovered, result.Missing, result.Wrong)
-
+	_, _ = fmt.Fprintf(stdout, "score: %g\n", result.Score)
+	_, _ = fmt.Fprintf(stdout, "discovered %d/%d endpoints:\n", result.Discovered.Len(), result.LabelEndpoints)
+	for _, v := range result.Discovered {
+		_, _ = fmt.Fprintf(stdout, "%s\n", v)
+	}
+	fmt.Fprintf(stdout, "removed: %v\n", result.Removed)
+	fmt.Fprintf(stdout, "added: %v\n", result.Added)
 	// _, _ = fmt.Fprintf(stdout, "%g\n", delta.Get(flags.getAsymmetric(), diffResult.diffReport))
 
 	return false, nil

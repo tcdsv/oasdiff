@@ -8,10 +8,11 @@ import (
 )
 
 type Result struct {
-	Score      float64
-	Discovered utils.StringList
-	Missing    utils.StringList
-	Wrong      utils.StringList
+	Score          float64
+	LabelEndpoints int
+	Discovered     utils.StringList
+	Removed        utils.StringList
+	Added          utils.StringList
 }
 
 func Get(labelEndpoints []diff.Endpoint, generatedEndpoints []diff.Endpoint) Result {
@@ -25,17 +26,18 @@ func Get(labelEndpoints []diff.Endpoint, generatedEndpoints []diff.Endpoint) Res
 	unitscore := float64(1) / float64(len(labelEndpoints))
 
 	return Result{
-		Score:      (float64(len(discovered)) * unitscore) - (float64(len(wrong)) * unitscore),
-		Discovered: discovered.ToStringList(),
-		Missing:    missing.ToStringList(),
-		Wrong:      wrong.ToStringList(),
+		Score:          (float64(len(discovered)) * unitscore) - (float64(len(wrong)) * unitscore),
+		LabelEndpoints: len(labelEndpoints),
+		Discovered:     discovered.ToStringList(),
+		Removed:        missing.ToStringList(),
+		Added:          wrong.ToStringList(),
 	}
 }
 
 func endpointToStr(endpoints []diff.Endpoint) utils.StringSet {
 	ep := make(utils.StringSet)
 	for _, e := range endpoints {
-		ep[fmt.Sprintf(e.Path+" "+e.Method)] = struct{}{}
+		ep[fmt.Sprintf(e.Method+" "+e.Path)] = struct{}{}
 	}
 	return ep
 }
