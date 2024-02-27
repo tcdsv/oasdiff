@@ -15,23 +15,16 @@ type Result struct {
 	Added          utils.StringList
 }
 
-func Get(labelEndpoints []diff.Endpoint, generatedEndpoints []diff.Endpoint) Result {
+func Get(labelEndpoints []diff.Endpoint, generatedEndpoints []diff.Endpoint) float64 {
 	labelEndpointsStr := endpointToStr(labelEndpoints)
 	generatedEndpointsStr := endpointToStr(generatedEndpoints)
 
 	wrong := generatedEndpointsStr.Minus(labelEndpointsStr)
 	discovered := generatedEndpointsStr.Intersection(labelEndpointsStr)
-	missing := labelEndpointsStr.Minus(generatedEndpointsStr)
 
 	unitscore := float64(1) / float64(len(labelEndpoints))
 
-	return Result{
-		Score:          (float64(len(discovered)) * unitscore) - (float64(len(wrong)) * unitscore),
-		LabelEndpoints: len(labelEndpoints),
-		Discovered:     discovered.ToStringList(),
-		Removed:        missing.ToStringList(),
-		Added:          wrong.ToStringList(),
-	}
+	return (float64(len(discovered)) * unitscore) - (float64(len(wrong)) * unitscore)
 }
 
 func endpointToStr(endpoints []diff.Endpoint) utils.StringSet {

@@ -19,7 +19,7 @@ func Test_NoDifference(t *testing.T) {
 		{Path: "/abc", Method: "POST"},
 	}
 
-	require.Equal(t, float64(1), delta2.Get(label, generated).Score)
+	require.Equal(t, float64(1), delta2.Get(label, generated))
 }
 
 func Test_Difference(t *testing.T) {
@@ -29,7 +29,7 @@ func Test_Difference(t *testing.T) {
 	}
 
 	generated := []diff.Endpoint{}
-	require.Equal(t, float64(0), delta2.Get(label, generated).Score)
+	require.Equal(t, float64(0), delta2.Get(label, generated))
 }
 
 func Test_Missing(t *testing.T) {
@@ -42,7 +42,7 @@ func Test_Missing(t *testing.T) {
 		{Path: "/abc", Method: "GET"},
 	}
 
-	require.Equal(t, float64(0.5), delta2.Get(label, generated).Score)
+	require.Equal(t, float64(0.5), delta2.Get(label, generated))
 }
 
 func Test_Wrong(t *testing.T) {
@@ -58,5 +58,20 @@ func Test_Wrong(t *testing.T) {
 		{Path: "/abc5", Method: "GET"},
 	}
 
-	require.Equal(t, float64(-2), delta2.Get(label, generated).Score)
+	require.Equal(t, float64(-2), delta2.Get(label, generated))
+}
+
+func Test_Wrong4(t *testing.T) {
+	label := []diff.Endpoint{
+		{Path: "/users", Method: "GET"},
+		{Path: "/users/{userId}", Method: "GET"},
+		{Path: "/products", Method: "GET"},
+	}
+
+	generated := []diff.Endpoint{
+		{Path: "/users", Method: "GET"},
+		{Path: "/products", Method: "GET"},
+	}
+
+	require.Equal(t, 2/float64(3), delta2.Get(label, generated))
 }
