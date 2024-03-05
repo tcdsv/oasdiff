@@ -1,43 +1,41 @@
 package delta
 
-import (
-	"github.com/tufin/oasdiff/diff"
-)
-
-func getEndpointsDelta(asymmetric bool, d *diff.EndpointsDiff) float64 {
-	if d.Empty() {
-		return 0
-	}
-
-	added := len(d.Added)
-	deleted := len(d.Deleted)
-	modified := len(d.Modified)
-	unchanged := len(d.Unchanged)
-	all := added + deleted + modified + unchanged
-
-	modifiedDelta := coefficient * getModifiedEndpointsDelta(asymmetric, d.Modified)
-
-	return ratio(asymmetric, added, deleted, modifiedDelta, all)
+type Endpoint struct {
+	Parameters  map[string]Parameter
+	RequestBody *RequestBody
+	Responses   map[string]Response
 }
 
-func getModifiedEndpointsDelta(asymmetric bool, d diff.ModifiedEndpoints) float64 {
-	weightedDeltas := make([]*WeightedDelta, len(d))
-	i := 0
-	for _, methodDiff := range d {
-		weightedDeltas[i] = NewWeightedDelta(getModifiedEndpointDelta(asymmetric, methodDiff), 1)
-		i++
-	}
-	return weightedAverage(weightedDeltas)
+func (e Endpoint) hasParameter(parameter string) bool {
+	_, exists := e.Parameters[parameter]
+	return exists
 }
 
-func getModifiedEndpointDelta(asymmetric bool, d *diff.MethodDiff) float64 {
-	if d.Empty() {
-		return 0
+func (e Endpoint) hasRequestBody() bool {
+	return e.RequestBody != nil
+}
+
+func (e Endpoint) hasResponse(responseCode string) bool {
+	_, exists := e.Parameters[responseCode]
+	return exists
+}
+
+func calcScoreEndpoints(gt endpoints, spec endpoints) float64 {
+	removed := 0
+	for key := range gt {
+		if _, exists := spec[key]; !exists {
+			removed++
+		}
 	}
 
-	// TODO: consider additional elements of MethodDiff
-	paramsDelta := getParametersDelta(asymmetric, d.ParametersDiff)
-	responsesDelta := getResponsesDelta(asymmetric, d.ResponsesDiff)
+	added := 0
+	for key := range spec {
+		if _, exists := gt[key]; !exists {
+			added++
+		}
+	}
 
-	return weightedAverage([]*WeightedDelta{paramsDelta, responsesDelta})
+	total := len(gt)
+	found := total - removed
+	return calcScore(len(gt), found, added)
 }

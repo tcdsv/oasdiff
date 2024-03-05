@@ -3,12 +3,9 @@ package internal
 import (
 	"fmt"
 	"io"
-	"net/http"
 
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/spf13/cobra"
-	"github.com/tufin/oasdiff/delta2"
-	"github.com/tufin/oasdiff/diff"
 )
 
 func getDeltaCmd() *cobra.Command {
@@ -30,51 +27,14 @@ func getDeltaCmd() *cobra.Command {
 }
 
 func runDelta(flags Flags, stdout io.Writer) (bool, *ReturnError) {
-
 	openapi3.CircularReferenceCounter = flags.getCircularReferenceCounter()
+	base := flags.getBase()
+	revision := flags.getRevision()
 
-	diffResult, err := calcDiff(flags)
-	if err != nil {
-		return false, err
-	}
+	gt := delta.Build(base)
+	spec := delta.Build(revision)
+	weights := delta.NewWeights()
 
-	labelEndpoints := getEndpoints(diffResult.specInfoPair.Base.Spec)
-	generatedEndpoints := getEndpoints(diffResult.specInfoPair.Revision.Spec)
-	result := delta2.Get(labelEndpoints, generatedEndpoints)
-	_, _ = fmt.Fprintf(stdout, "%g\n", result)
-	// _, _ = fmt.Fprintf(stdout, "%g\n", delta.Get(flags.getAsymmetric(), diffResult.diffReport))
-
+	_, _ = fmt.Fprintf(stdout, "%g\n", delta.CalcScore(weights, gt, spec))
 	return false, nil
-}
-
-func getEndpoints(labelSpec *openapi3.T) []diff.Endpoint {
-	endpoints := []diff.Endpoint{}
-
-	var operations = []string{
-		http.MethodGet,
-		http.MethodHead,
-		http.MethodPost,
-		http.MethodPut,
-		http.MethodPatch,
-		http.MethodDelete,
-		http.MethodConnect,
-		http.MethodOptions,
-		http.MethodTrace,
-	}
-
-	for path, v := range labelSpec.Paths.Map() {
-
-		for _, op := range operations {
-			opItem := v.GetOperation(op)
-			if opItem != nil {
-				endpoints = append(endpoints, diff.Endpoint{
-					Path:   path,
-					Method: op,
-				})
-			}
-		}
-
-	}
-
-	return endpoints
 }

@@ -1,47 +1,65 @@
 package delta
 
-import (
-	"github.com/tufin/oasdiff/diff"
-)
+func calcScoreParams(gt endpoints, spec endpoints) float64 {
 
-func getParametersDelta(asymmetric bool, d *diff.ParametersDiffByLocation) *WeightedDelta {
-	if d.Empty() {
-		return &WeightedDelta{}
+	total := 0
+	for _, value := range gt {
+		total += len(value.Parameters)
 	}
 
-	added := d.Added.Len()
-	deleted := d.Deleted.Len()
-	modified := d.Modified.Len()
-	unchanged := d.Unchanged.Len()
-	all := added + deleted + modified + unchanged
-
-	modifiedDelta := coefficient * getModifiedParametersDelta(asymmetric, d.Modified)
-
-	return NewWeightedDelta(
-		ratio(asymmetric, added, deleted, modifiedDelta, all),
-		all,
-	)
-}
-
-func getModifiedParametersDelta(asymmetric bool, d diff.ParamDiffByLocation) float64 {
-	weightedDeltas := make([]*WeightedDelta, len(d))
-	i := 0
-	for _, paramsDiff := range d {
-		for _, parameterDiff := range paramsDiff {
-			weightedDeltas[i] = NewWeightedDelta(getModifiedParameterDelta(asymmetric, parameterDiff), 1)
-			i++
+	removed := 0
+	for endpoint, value := range gt {
+		for param, _ := range value.Parameters {
+			if _, exists := spec[endpoint].Parameters[param]; !exists {
+				removed++
+			}
 		}
 	}
-	return weightedAverage(weightedDeltas)
-}
 
-func getModifiedParameterDelta(asymmetric bool, d *diff.ParameterDiff) float64 {
-	if d.Empty() {
-		return 0.0
+	added := 0
+	for endpoint, value := range spec {
+		for param, _ := range value.Parameters {
+			if _, exists := gt[endpoint].Parameters[param]; !exists {
+				added++
+			}
+		}
 	}
 
-	// TODO: consider additional elements of ParameterDiff
-	schemaDelta := getSchemaDelta(asymmetric, d.SchemaDiff)
+	return calcScore(total, total-removed, added)
+}
 
-	return schemaDelta
+// Total: The total number of parameters in the label.
+// Removed: A parameter required field present in a labeled endpoint but missing from the corresponding endpoint in the result.
+// Added: ?
+func calcScoreParamsRequired(gt endpoints, spec endpoints) float64 {
+	total := 0
+	for _, value := range gt {
+		total += len(value.Parameters)
+	}
+
+	removed := 0
+	for gtEndpointName, gtEndpoint := range gt {
+		if !endpointExists(gtEndpointName, spec) {
+			continue
+		}
+
+		for gtParamName, gtParamerter := range gtEndpoint.Parameters {
+			if !spec[gtEndpointName].hasParameter(gtParamName) {
+				// if !parameterExists(gtParamName, spec[gtEndpointName].Parameters) {
+				// continue
+				// }
+				continue
+			}
+			specParameters := spec[gtEndpointName].Parameters
+			specParameter := specParameters[gtParamName]
+			if gtParamerter.Required != specParameter.Required {
+				removed++
+			}
+		}
+	}
+
+	if total == 0 {
+		return 0.0
+	}
+	return calcScore(total, total-removed, 0)
 }

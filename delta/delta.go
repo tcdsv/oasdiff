@@ -1,39 +1,114 @@
 package delta
 
 import (
-	"github.com/tufin/oasdiff/diff"
+	"strconv"
+
+	"github.com/getkin/kin-openapi/openapi3"
 )
 
-const coefficient = 0.5
+const (
+	ContentTypeJSON      = "application/json"
+	ContentTypeXML       = "application/xml"
+	ContentTypePlainText = "text/plain"
+)
 
-// Get returns a numeric value between 0 and 1 representing the distance between base and revision specs
-func Get(asymmetric bool, diffReport *diff.Diff) float64 {
-	if diffReport.Empty() {
-		return 0
-	}
-
-	return getEndpointsDelta(asymmetric, diffReport.EndpointsDiff)
+type Weights struct {
+	Endpoints           float64
+	Parameters          float64
+	ParametersRequired  float64
+	RequestBody         float64
+	RequestBodyRequired float64
+	RequestBodyContent  float64
+	Responses           float64
+	ResponsesContent    float64
 }
 
-func ratio(asymmetric bool, added int, deleted int, modifiedDelta float64, all int) float64 {
-	if asymmetric {
-		added = 0
-	}
-
-	return (float64(added+deleted) + modifiedDelta) / float64(all)
+type Parameter struct {
+	Required bool
 }
 
-func modifiedLeafDelta(asymmetric bool, modified float64) float64 {
-	if asymmetric {
-		return modified / 2
-	}
-
-	return modified
+type RequestBody struct {
+	Contents map[string]Content
+	Required bool
 }
 
-func boolToFloat64(b bool) float64 {
-	if b {
-		return 1.0
-	}
-	return 0.0
+func (r RequestBody) hasContent(contentType string) bool {
+	_, exists := r.Contents[contentType]
+	return exists
 }
+
+type Content struct {
+	Schema *openapi3.Schema
+}
+
+type Response struct {
+	Content map[string]Content
+}
+
+func (r Response) hasContent(contentType string) bool {
+	_, exists := r.Content[contentType]
+	return exists
+}
+
+type endpoints map[string]Endpoint
+
+func calcScore(total int, found int, added int) float64 {
+	if total == 0 {
+		if added > 0 {
+			return 0
+		}
+		return 1
+	}
+	point := 1 / float64(total)
+	return (float64(found) * point) - (float64(added) * point)
+}
+
+func GetPathKey(method string, path string) string {
+	return method + "$" + path
+}
+
+func GetStatusKey(status int) string {
+	return strconv.Itoa(status)
+}
+
+func endpointExists(endpoint string, spec endpoints) bool {
+	_, exists := spec[endpoint]
+	return exists
+}
+
+func NewWeights() Weights {
+	return Weights{
+		Endpoints:           0.0,
+		Parameters:          0.0,
+		ParametersRequired:  0.0,
+		RequestBody:         0.0,
+		RequestBodyRequired: 0.0,
+		RequestBodyContent:  0.0,
+		Responses:           0.0,
+		ResponsesContent:    0.0,
+	}
+}
+
+func CalcScore(weights Weights, gt endpoints, spec endpoints) float64 {
+	endpoints := weights.Endpoints * calcScoreEndpoints(gt, spec)
+	parameters := weights.Parameters * calcScoreParams(gt, spec)
+	parametersRequired := weights.ParametersRequired * calcScoreParamsRequired(gt, spec)
+	requestBody := weights.RequestBody * calcScoreRequestBody(gt, spec)
+	requestBodyRequired := weights.RequestBodyRequired * calcScoreRequestBodyRequired(gt, spec)
+	requestBodyContent := weights.RequestBodyContent * calcScoreRequestBodyContents(gt, spec)
+	responses := weights.Responses * calcScoreResponses(gt, spec)
+	responsesContent := weights.ResponsesContent * calcScoreResponsesContent(gt, spec)
+	return endpoints +
+		parameters +
+		parametersRequired +
+		requestBody +
+		requestBodyRequired +
+		requestBodyContent +
+		responses +
+		responsesContent
+}
+
+// func parameterExists(param string, parameters map[string]Parameter) bool {
+// 	_, exists := parameters[param]
+// 	return exists
+// }

@@ -58,6 +58,13 @@ func (diff *SchemaDiff) Empty() bool {
 	return diff == nil || *diff == SchemaDiff{Base: diff.Base, Revision: diff.Revision}
 }
 
+func GetSchemaDiff2(schema1, schema2 *openapi3.SchemaRef) (*SchemaDiff, error) {
+	config := NewConfig()
+	config.WithExcludeElements([]string{"properties", "examples", "title"})
+	state := newState()
+	return getSchemaDiff(config, state, schema1, schema2)
+}
+
 func getSchemaDiff(config *Config, state *state, schema1, schema2 *openapi3.SchemaRef) (*SchemaDiff, error) {
 
 	if diff, ok := state.cache.get(state.direction, schema1, schema2); ok {
