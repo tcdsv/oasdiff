@@ -6,6 +6,8 @@ import (
 
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/spf13/cobra"
+	"github.com/tufin/oasdiff/delta"
+	"github.com/tufin/oasdiff/load"
 )
 
 func getDeltaCmd() *cobra.Command {
@@ -28,13 +30,28 @@ func getDeltaCmd() *cobra.Command {
 
 func runDelta(flags Flags, stdout io.Writer) (bool, *ReturnError) {
 	openapi3.CircularReferenceCounter = flags.getCircularReferenceCounter()
-	base := flags.getBase()
-	revision := flags.getRevision()
 
-	gt := delta.Build(base)
-	spec := delta.Build(revision)
+	loader := openapi3.NewLoader()
+	loader.IsExternalRefsAllowed = true
+
+	flattenAllOf := load.GetOption(load.WithFlattenAllOf(), flags.getFlattenAllOf())
+	flattenParams := load.GetOption(load.WithFlattenParams(), flags.getFlattenParams())
+	lowerHeaderNames := load.GetOption(load.WithLowercaseHeaders(), flags.getInsensitiveHeaders())
+
+	s1, err := load.NewSpecInfo(loader, flags.getBase(), flattenAllOf, flattenParams, lowerHeaderNames)
+	if err != nil {
+		return false, getErrFailedToLoadSpec("base", flags.getBase(), err)
+	}
+
+	s2, err := load.NewSpecInfo(loader, flags.getRevision(), flattenAllOf, flattenParams, lowerHeaderNames)
+	if err != nil {
+		return false, getErrFailedToLoadSpec("revision", flags.getRevision(), err)
+	}
+
+	gt := delta.Build(s1.Spec)
+	spec := delta.Build(s2.Spec)
+
 	weights := delta.NewWeights()
-
 	_, _ = fmt.Fprintf(stdout, "%g\n", delta.CalcScore(weights, gt, spec))
 	return false, nil
 }
