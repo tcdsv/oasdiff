@@ -17,18 +17,18 @@ func Build(spec *openapi3.T) endpoints {
 }
 
 func extractPath(path string, pathItem openapi3.PathItem, ep endpoints) {
-	extractOperation(path, pathItem.Get, http.MethodGet, ep)
-	extractOperation(path, pathItem.Head, http.MethodHead, ep)
-	extractOperation(path, pathItem.Post, http.MethodPost, ep)
-	extractOperation(path, pathItem.Put, http.MethodPut, ep)
-	extractOperation(path, pathItem.Patch, http.MethodPatch, ep)
-	extractOperation(path, pathItem.Delete, http.MethodDelete, ep)
-	extractOperation(path, pathItem.Connect, http.MethodConnect, ep)
-	extractOperation(path, pathItem.Options, http.MethodOptions, ep)
-	extractOperation(path, pathItem.Trace, http.MethodTrace, ep)
+	extractOperation(path, pathItem.Get, http.MethodGet, ep, pathItem.Parameters)
+	extractOperation(path, pathItem.Head, http.MethodHead, ep, pathItem.Parameters)
+	extractOperation(path, pathItem.Post, http.MethodPost, ep, pathItem.Parameters)
+	extractOperation(path, pathItem.Put, http.MethodPut, ep, pathItem.Parameters)
+	extractOperation(path, pathItem.Patch, http.MethodPatch, ep, pathItem.Parameters)
+	extractOperation(path, pathItem.Delete, http.MethodDelete, ep, pathItem.Parameters)
+	extractOperation(path, pathItem.Connect, http.MethodConnect, ep, pathItem.Parameters)
+	extractOperation(path, pathItem.Options, http.MethodOptions, ep, pathItem.Parameters)
+	extractOperation(path, pathItem.Trace, http.MethodTrace, ep, pathItem.Parameters)
 }
 
-func extractOperation(path string, op *openapi3.Operation, opName string, ep endpoints) {
+func extractOperation(path string, op *openapi3.Operation, opName string, ep endpoints, parameters openapi3.Parameters) {
 	if op == nil {
 		return
 	}
@@ -39,7 +39,8 @@ func extractOperation(path string, op *openapi3.Operation, opName string, ep end
 		Responses:  make(map[string]Response),
 	}
 
-	extractOperationParameters(endpoint, &op.Parameters, ep)
+	params := append(parameters, op.Parameters...)
+	extractOperationParameters(endpoint, params, ep)
 	extractRequestBody(endpoint, op.RequestBody, ep)
 	extractResponses(endpoint, op.Responses, ep)
 }
@@ -107,11 +108,11 @@ func extractRequestBody(endpoint string, rb *openapi3.RequestBodyRef, ep endpoin
 	ep[endpoint] = epoint
 }
 
-func extractOperationParameters(endpoint string, p *openapi3.Parameters, ep endpoints) {
+func extractOperationParameters(endpoint string, p openapi3.Parameters, ep endpoints) {
 	if p == nil {
 		return
 	}
-	for _, v := range *p {
+	for _, v := range p {
 		if v != nil && v.Value != nil {
 			ep[endpoint].Parameters[v.Value.Name] = Parameter{
 				Required: v.Value.Required,

@@ -37,29 +37,21 @@ func calcScoreParamsRequired(gt endpoints, spec endpoints) float64 {
 		total += len(value.Parameters)
 	}
 
-	removed := 0
+	found := 0
 	for gtEndpointName, gtEndpoint := range gt {
 		if !endpointExists(gtEndpointName, spec) {
 			continue
 		}
-
 		for gtParamName, gtParamerter := range gtEndpoint.Parameters {
 			if !spec[gtEndpointName].hasParameter(gtParamName) {
-				// if !parameterExists(gtParamName, spec[gtEndpointName].Parameters) {
-				// continue
-				// }
 				continue
 			}
-			specParameters := spec[gtEndpointName].Parameters
-			specParameter := specParameters[gtParamName]
-			if gtParamerter.Required != specParameter.Required {
-				removed++
+			specParameter := spec[gtEndpointName].Parameters[gtParamName]
+			if gtParamerter.Required == specParameter.Required {
+				found++
 			}
 		}
 	}
 
-	if total == 0 {
-		return 0.0
-	}
-	return calcScore(total, total-removed, 0)
+	return calcScore(total, found, 0)
 }

@@ -54,10 +54,7 @@ type endpoints map[string]Endpoint
 
 func calcScore(total int, found int, added int) float64 {
 	if total == 0 {
-		if added > 0 {
-			return 0
-		}
-		return 1
+		return 0
 	}
 	point := 1 / float64(total)
 	return (float64(found) * point) - (float64(added) * point)

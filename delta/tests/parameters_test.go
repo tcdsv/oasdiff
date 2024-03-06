@@ -116,10 +116,6 @@ func TestCalcScore_ParametersRequiredFound(t *testing.T) {
 
 func TestCalcScore_ParametersRequiredFoundAdded(t *testing.T) {
 
-	// What's the score?
-
-	t.Skip()
-
 	weights := delta.NewWeights()
 	weights.ParametersRequired = 1.0
 
@@ -138,7 +134,7 @@ func TestCalcScore_ParametersRequiredFoundAdded(t *testing.T) {
 			},
 		},
 	}
-	require.Equal(t, 1.0, delta.CalcScore(weights, gt, spec))
+	require.Equal(t, 0.0, delta.CalcScore(weights, gt, spec))
 }
 
 func TestCalcScore_ParametersRequiredFoundRemoved(t *testing.T) {
