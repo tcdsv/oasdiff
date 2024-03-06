@@ -1,0 +1,188 @@
+openapi: 3.0.0
+info:
+  title: Gochatapp API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+paths:
+  /status:
+    get:
+      summary: Get server status
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Simple Server
+                
+  /register:
+    post:
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:    
+              schema:
+                $ref: '#/components/schemas/Response'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: error decoding request object
+
+  /login:
+    post:
+      summary: Login user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: error decoding request object    
+                
+  /verify-contact:
+    post:
+      summary: Verify contact
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: error decoding request object
+
+  /chat-history:
+    get:
+      summary: Get chat history
+      parameters:
+        - in: query
+          name: u1
+          schema:
+            type: string
+        - in: query
+          name: u2
+          schema:
+            type: string
+        - in: query
+          name: from-ts
+          schema:
+            type: string
+        - in: query
+          name: to-ts
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+
+  /contact-list:
+    get:
+      summary: Get contact list
+      parameters:
+        - in: query
+          name: username
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+                        
+components:
+  schemas:
+
+    UserRequest:
+      type: object
+      required:
+        - username
+        - password
+        - client
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        client:
+          type: string
+          
+    Response:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        data:
+          type: object
+        total:
+          type: integer
+          
+    Chat:
+      type: object
+      properties:
+        id:
+          type: string
+        from:
+          type: string  
+        to:
+          type: string
+        message:
+          type: string
+        timestamp:
+          type: integer
+          format: int64
+          
+    ContactList: 
+      type: object
+      properties:
+        username:
+          type: string
+        last_activity:
+          type: integer 
+          format: int64
