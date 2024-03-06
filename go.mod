@@ -1,16 +1,17 @@
-module github.com/tufin/oasdiff
+module github.com/tcdsv/oasdiff
 
 go 1.21.5
 
 toolchain go1.21.6
 
 require (
-	cloud.google.com/go v0.112.0
+	cloud.google.com/go v0.112.1
 	github.com/TwiN/go-color v1.4.1
 	github.com/getkin/kin-openapi v0.122.0
 	github.com/oasdiff/go-common v0.2.29
 	github.com/oasdiff/telemetry v0.1.2
-	github.com/stretchr/testify v1.8.4
+	github.com/stretchr/testify v1.9.0
+	github.com/tufin/oasdiff v1.10.11
 	github.com/yargevad/filepathx v1.0.0
 	github.com/yuin/goldmark v1.7.0
 	golang.org/x/exp v0.0.0-20240119083558-1b970713d09a
@@ -20,10 +21,9 @@ require (
 require (
 	github.com/denisbrodbeck/machineid v1.0.1 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
-	github.com/rogpeppe/go-internal v1.11.0 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	golang.org/x/sys v0.16.0 // indirect
+	golang.org/x/sys v0.17.0 // indirect
 )
 
 require (
