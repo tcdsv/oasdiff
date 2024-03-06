@@ -6,8 +6,8 @@ import (
 	"github.com/getkin/kin-openapi/openapi3"
 )
 
-func Build(spec *openapi3.T) endpoints {
-	ep := make(endpoints)
+func Build(spec *openapi3.T) Endpoints {
+	ep := make(Endpoints)
 
 	for path, v := range spec.Paths.Map() {
 		extractPath(path, *v, ep)
@@ -16,7 +16,7 @@ func Build(spec *openapi3.T) endpoints {
 	return ep
 }
 
-func extractPath(path string, pathItem openapi3.PathItem, ep endpoints) {
+func extractPath(path string, pathItem openapi3.PathItem, ep Endpoints) {
 	extractOperation(path, pathItem.Get, http.MethodGet, ep, pathItem.Parameters)
 	extractOperation(path, pathItem.Head, http.MethodHead, ep, pathItem.Parameters)
 	extractOperation(path, pathItem.Post, http.MethodPost, ep, pathItem.Parameters)
@@ -28,7 +28,7 @@ func extractPath(path string, pathItem openapi3.PathItem, ep endpoints) {
 	extractOperation(path, pathItem.Trace, http.MethodTrace, ep, pathItem.Parameters)
 }
 
-func extractOperation(path string, op *openapi3.Operation, opName string, ep endpoints, parameters openapi3.Parameters) {
+func extractOperation(path string, op *openapi3.Operation, opName string, ep Endpoints, parameters openapi3.Parameters) {
 	if op == nil {
 		return
 	}
@@ -45,7 +45,7 @@ func extractOperation(path string, op *openapi3.Operation, opName string, ep end
 	extractResponses(endpoint, op.Responses, ep)
 }
 
-func extractResponses(endpoint string, resp *openapi3.Responses, ep endpoints) {
+func extractResponses(endpoint string, resp *openapi3.Responses, ep Endpoints) {
 	if resp == nil {
 		return
 	}
@@ -79,7 +79,7 @@ func extractResponses(endpoint string, resp *openapi3.Responses, ep endpoints) {
 	}
 }
 
-func extractRequestBody(endpoint string, rb *openapi3.RequestBodyRef, ep endpoints) {
+func extractRequestBody(endpoint string, rb *openapi3.RequestBodyRef, ep Endpoints) {
 	if rb == nil {
 		return
 	}
@@ -108,7 +108,7 @@ func extractRequestBody(endpoint string, rb *openapi3.RequestBodyRef, ep endpoin
 	ep[endpoint] = epoint
 }
 
-func extractOperationParameters(endpoint string, p openapi3.Parameters, ep endpoints) {
+func extractOperationParameters(endpoint string, p openapi3.Parameters, ep Endpoints) {
 	if p == nil {
 		return
 	}

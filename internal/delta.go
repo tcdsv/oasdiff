@@ -51,7 +51,7 @@ func runDelta(flags Flags, stdout io.Writer) (bool, *ReturnError) {
 	gt := delta.Build(s1.Spec)
 	spec := delta.Build(s2.Spec)
 
-	weights := delta.NewWeights()
+	weights := delta.DefaultWeights()
 	_, _ = fmt.Fprintf(stdout, "%g\n", delta.CalcScore(weights, gt, spec))
 	return false, nil
 }

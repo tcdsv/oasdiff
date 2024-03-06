@@ -40,7 +40,7 @@ type Response struct {
 	Content map[string]Content
 }
 
-type endpoints map[string]Endpoint
+type Endpoints map[string]Endpoint
 
 func calcScore(total int, found int, added int) float64 {
 	if total == 0 {
@@ -58,12 +58,25 @@ func GetStatusKey(status int) string {
 	return strconv.Itoa(status)
 }
 
-func endpointExists(endpoint string, spec endpoints) bool {
+func endpointExists(endpoint string, spec Endpoints) bool {
 	_, exists := spec[endpoint]
 	return exists
 }
 
-func NewWeights() Weights {
+func DefaultWeights() Weights {
+	return Weights{
+		Endpoints:           0.5,
+		Parameters:          0.5 / 7,
+		ParametersRequired:  0.5 / 7,
+		RequestBody:         0.5 / 7,
+		RequestBodyRequired: 0.5 / 7,
+		RequestBodyContent:  0.5 / 7,
+		Responses:           0.5 / 7,
+		ResponsesContent:    0.5 / 7,
+	}
+}
+
+func EmptyWeights() Weights {
 	return Weights{
 		Endpoints:           0.0,
 		Parameters:          0.0,
@@ -76,7 +89,7 @@ func NewWeights() Weights {
 	}
 }
 
-func CalcScore(weights Weights, gt endpoints, spec endpoints) float64 {
+func CalcScore(weights Weights, gt Endpoints, spec Endpoints) float64 {
 	endpoints := weights.Endpoints * calcScoreEndpoints(gt, spec)
 	parameters := weights.Parameters * calcScoreParams(gt, spec)
 	parametersRequired := weights.ParametersRequired * calcScoreParamsRequired(gt, spec)

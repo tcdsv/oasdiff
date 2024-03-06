@@ -1,6 +1,6 @@
 package delta
 
-func calcScoreParams(gt endpoints, spec endpoints) float64 {
+func calcScoreParams(gt Endpoints, spec Endpoints) float64 {
 
 	total := 0
 	for _, value := range gt {
@@ -31,7 +31,7 @@ func calcScoreParams(gt endpoints, spec endpoints) float64 {
 // Total: The total number of parameters in the label.
 // Removed: A parameter required field present in a labeled endpoint but missing from the corresponding endpoint in the result.
 // Added: ?
-func calcScoreParamsRequired(gt endpoints, spec endpoints) float64 {
+func calcScoreParamsRequired(gt Endpoints, spec Endpoints) float64 {
 	total := 0
 	for _, value := range gt {
 		total += len(value.Parameters)

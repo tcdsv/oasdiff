@@ -1,6 +1,6 @@
 package delta
 
-func calcScoreResponses(gt endpoints, spec endpoints) float64 {
+func calcScoreResponses(gt Endpoints, spec Endpoints) float64 {
 	total := 0
 	for _, gtEndpoint := range gt {
 		total += len(gtEndpoint.Responses)
@@ -37,7 +37,7 @@ func calcScoreResponses(gt endpoints, spec endpoints) float64 {
 	return calcScore(total, found, added)
 }
 
-func calcScoreResponsesContent(gt endpoints, spec endpoints) float64 {
+func calcScoreResponsesContent(gt Endpoints, spec Endpoints) float64 {
 	total := 0
 	for _, endpoint := range gt {
 		for _, response := range endpoint.Responses {

@@ -1,110 +1,38 @@
 openapi: 3.0.0
 info:
-  title: Sample API
+  title: Inventory Management API
   version: 1.0.0
-  description: A sample API with multiple methods
+
+servers:
+  - url: http://example.com/api
 
 paths:
-  /users:
-    get:
-      summary: Get a list of users
-      responses:
-        '200':
-          description: A list of users
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                    username:
-                      type: string
-      parameters:
-        - name: limit
-          in: query
-          description: Maximum number of users to return
-          required: false
-          schema:
-            type: integer
-            default: 10
-        - name: offset
-          in: query
-          description: Offset for pagination
-          required: false
-          schema:
-            type: integer
-            default: 0
-
+  /createItem:
     post:
-      summary: Create a new user
+      summary: Create a new item in the inventory
+      parameters:
+        - name: apiKey
+          in: query
+          required: true
+          schema:
+            type: string
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
-              properties:
-                username:
-                  type: string
-                email:
-                  type: string
       responses:
         '201':
-          description: User created successfully
-        '400':
-          description: Bad request, invalid input data
-
-  /users/{userId}:
-    parameters:
-      - name: userId
-        in: path
-        description: ID of the user to be operated on
-        required: true
-        schema:
-          type: integer
-    get:
-      summary: Get user details by ID
-      responses:
-        '200':
-          description: User details retrieved successfully
+          description: Item created successfully.
           content:
             application/json:
               schema:
                 type: object
                 properties:
                   id:
-                    type: integer
-                  username:
                     type: string
-                  email:
+                  message:
                     type: string
-
-    put:
-      summary: Update user details by ID
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                username:
-                  type: string
-                email:
-                  type: string
-      responses:
-        '200':
-          description: User details updated successfully
-        '404':
-          description: User not found
-
-    delete:
-      summary: Delete a user by ID
-      responses:
-        '204':
-          description: User deleted successfully
-        '404':
-          description: User not found
+        '400':
+          description: Bad request.

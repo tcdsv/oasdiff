@@ -10,7 +10,7 @@ import (
 
 func TestCalcScore_EndpointsFound(t *testing.T) {
 
-	weights := delta.NewWeights()
+	weights := delta.EmptyWeights()
 	weights.Endpoints = 1.0
 
 	gt := map[string]delta.Endpoint{
@@ -24,7 +24,7 @@ func TestCalcScore_EndpointsFound(t *testing.T) {
 
 func TestCalcScore_EndpointsAdded(t *testing.T) {
 
-	weights := delta.NewWeights()
+	weights := delta.EmptyWeights()
 	weights.Endpoints = 1.0
 
 	gt := map[string]delta.Endpoint{
@@ -38,7 +38,7 @@ func TestCalcScore_EndpointsAdded(t *testing.T) {
 
 func TestCalcScore_EndpointsRemoved(t *testing.T) {
 
-	weights := delta.NewWeights()
+	weights := delta.EmptyWeights()
 	weights.Endpoints = 1.0
 
 	gt := map[string]delta.Endpoint{

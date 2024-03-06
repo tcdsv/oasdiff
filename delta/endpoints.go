@@ -20,7 +20,7 @@ func (e Endpoint) hasResponse(responseCode string) bool {
 	return exists
 }
 
-func calcScoreEndpoints(gt endpoints, spec endpoints) float64 {
+func calcScoreEndpoints(gt Endpoints, spec Endpoints) float64 {
 	removed := 0
 	for key := range gt {
 		if _, exists := spec[key]; !exists {

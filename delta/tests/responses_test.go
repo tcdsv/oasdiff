@@ -10,7 +10,7 @@ import (
 )
 
 func TestCalcScore_ResponseFound(t *testing.T) {
-	weights := delta.NewWeights()
+	weights := delta.EmptyWeights()
 	weights.Responses = 1.0
 
 	gt := map[string]delta.Endpoint{
@@ -33,7 +33,7 @@ func TestCalcScore_ResponseFound(t *testing.T) {
 }
 
 func TestCalcScore_ResponseRemoved(t *testing.T) {
-	weights := delta.NewWeights()
+	weights := delta.EmptyWeights()
 	weights.Responses = 1.0
 
 	gt := map[string]delta.Endpoint{
@@ -54,7 +54,7 @@ func TestCalcScore_ResponseRemoved(t *testing.T) {
 }
 
 func TestCalcScore_ResponseAdded(t *testing.T) {
-	weights := delta.NewWeights()
+	weights := delta.EmptyWeights()
 	weights.Responses = 1.0
 
 	gt := map[string]delta.Endpoint{
@@ -77,7 +77,7 @@ func TestCalcScore_ResponseAdded(t *testing.T) {
 }
 
 func TestCalcScore_ResponseAddedEmptyGt(t *testing.T) {
-	weights := delta.NewWeights()
+	weights := delta.EmptyWeights()
 	weights.Responses = 1.0
 
 	gt := map[string]delta.Endpoint{
@@ -98,7 +98,7 @@ func TestCalcScore_ResponseAddedEmptyGt(t *testing.T) {
 }
 
 func TestCalcScore_ResponseContentFound(t *testing.T) {
-	weights := delta.NewWeights()
+	weights := delta.EmptyWeights()
 	weights.ResponsesContent = 1.0
 
 	gt := map[string]delta.Endpoint{
@@ -137,7 +137,7 @@ func TestCalcScore_ResponseContentFound(t *testing.T) {
 }
 
 func TestCalcScore_ResponseContentNotFound(t *testing.T) {
-	weights := delta.NewWeights()
+	weights := delta.EmptyWeights()
 	weights.ResponsesContent = 1.0
 
 	gt := map[string]delta.Endpoint{

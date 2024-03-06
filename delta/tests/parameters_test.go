@@ -10,7 +10,7 @@ import (
 
 func TestCalcScore_ParametersFound(t *testing.T) {
 
-	weights := delta.NewWeights()
+	weights := delta.EmptyWeights()
 	weights.Parameters = 1.0
 
 	gt := map[string]delta.Endpoint{
@@ -33,7 +33,7 @@ func TestCalcScore_ParametersFound(t *testing.T) {
 
 func TestCalcScore_ParametersAdded(t *testing.T) {
 
-	weights := delta.NewWeights()
+	weights := delta.EmptyWeights()
 	weights.Parameters = 1.0
 
 	gt := map[string]delta.Endpoint{
@@ -56,7 +56,7 @@ func TestCalcScore_ParametersAdded(t *testing.T) {
 
 func TestCalcScore_ParametersRemoved(t *testing.T) {
 
-	weights := delta.NewWeights()
+	weights := delta.EmptyWeights()
 	weights.Parameters = 1.0
 
 	gt := map[string]delta.Endpoint{
@@ -75,7 +75,7 @@ func TestCalcScore_ParametersRemoved(t *testing.T) {
 
 func TestCalcScore_ParametersAddedEmptyGt(t *testing.T) {
 
-	weights := delta.NewWeights()
+	weights := delta.EmptyWeights()
 	weights.Parameters = 1.0
 
 	gt := map[string]delta.Endpoint{
@@ -93,7 +93,7 @@ func TestCalcScore_ParametersAddedEmptyGt(t *testing.T) {
 }
 
 func TestCalcScore_ParametersRequiredFound(t *testing.T) {
-	weights := delta.NewWeights()
+	weights := delta.EmptyWeights()
 	weights.ParametersRequired = 1.0
 
 	gt := map[string]delta.Endpoint{
@@ -116,7 +116,7 @@ func TestCalcScore_ParametersRequiredFound(t *testing.T) {
 
 func TestCalcScore_ParametersRequiredFoundAdded(t *testing.T) {
 
-	weights := delta.NewWeights()
+	weights := delta.EmptyWeights()
 	weights.ParametersRequired = 1.0
 
 	gt := map[string]delta.Endpoint{
@@ -139,7 +139,7 @@ func TestCalcScore_ParametersRequiredFoundAdded(t *testing.T) {
 
 func TestCalcScore_ParametersRequiredFoundRemoved(t *testing.T) {
 
-	weights := delta.NewWeights()
+	weights := delta.EmptyWeights()
 	weights.ParametersRequired = 1.0
 
 	gt := map[string]delta.Endpoint{
@@ -162,7 +162,7 @@ func TestCalcScore_ParametersRequiredFoundRemoved(t *testing.T) {
 
 func TestCalcScore_ParametersRequiredFoundAddedEmptyGt(t *testing.T) {
 
-	weights := delta.NewWeights()
+	weights := delta.EmptyWeights()
 	weights.ParametersRequired = 1.0
 
 	gt := map[string]delta.Endpoint{

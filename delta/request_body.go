@@ -1,6 +1,6 @@
 package delta
 
-func calcScoreRequestBody(gt endpoints, spec endpoints) float64 {
+func calcScoreRequestBody(gt Endpoints, spec Endpoints) float64 {
 
 	total := len(gt)
 
@@ -32,7 +32,7 @@ func calcScoreRequestBody(gt endpoints, spec endpoints) float64 {
 // Total: The total number of request bodies in the label. (every request body has a Required field)
 // Removed: A request body required field present in a labeled endpoint but missing from the corresponding endpoint in the result.
 // Added: ?
-func calcScoreRequestBodyRequired(gt endpoints, spec endpoints) float64 {
+func calcScoreRequestBodyRequired(gt Endpoints, spec Endpoints) float64 {
 	total := 0
 	for _, gtEndpoint := range gt {
 		if gtEndpoint.RequestBody != nil {
@@ -64,7 +64,7 @@ func calcScoreRequestBodyRequired(gt endpoints, spec endpoints) float64 {
 // Removed: A request body content type field present in a labeled endpoint but missing from the corresponding endpoint in the result.
 // Added: ?
 
-func calcScoreRequestBodyContents(gt endpoints, spec endpoints) float64 {
+func calcScoreRequestBodyContents(gt Endpoints, spec Endpoints) float64 {
 	total := 0
 	for _, v := range gt {
 		if v.RequestBody == nil {

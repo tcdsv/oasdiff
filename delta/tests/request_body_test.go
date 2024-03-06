@@ -11,7 +11,7 @@ import (
 
 func TestCalcScore_RequestBodyFound(t *testing.T) {
 
-	weights := delta.NewWeights()
+	weights := delta.EmptyWeights()
 	weights.RequestBody = 1.0
 
 	gt := map[string]delta.Endpoint{
@@ -31,7 +31,7 @@ func TestCalcScore_RequestBodyFound(t *testing.T) {
 
 func TestCalcScore_RequestBodyAdded(t *testing.T) {
 
-	weights := delta.NewWeights()
+	weights := delta.EmptyWeights()
 	weights.RequestBody = 1.0
 
 	gt := map[string]delta.Endpoint{
@@ -51,7 +51,7 @@ func TestCalcScore_RequestBodyAdded(t *testing.T) {
 
 func TestCalcScore_RequestBodyRemoved(t *testing.T) {
 
-	weights := delta.NewWeights()
+	weights := delta.EmptyWeights()
 	weights.RequestBody = 1.0
 
 	gt := map[string]delta.Endpoint{
@@ -70,7 +70,7 @@ func TestCalcScore_RequestBodyRemoved(t *testing.T) {
 }
 
 func TestCalcScore_RequestBodyRequiredFound(t *testing.T) {
-	weights := delta.NewWeights()
+	weights := delta.EmptyWeights()
 	weights.RequestBodyRequired = 1.0
 
 	gt := map[string]delta.Endpoint{
@@ -93,7 +93,7 @@ func TestCalcScore_RequestBodyRequiredFound(t *testing.T) {
 }
 
 func TestCalcScore_RequestBodyRequiredRemoved(t *testing.T) {
-	weights := delta.NewWeights()
+	weights := delta.EmptyWeights()
 	weights.RequestBodyRequired = 1.0
 
 	gt := map[string]delta.Endpoint{
@@ -116,7 +116,7 @@ func TestCalcScore_RequestBodyRequiredRemoved(t *testing.T) {
 }
 
 func TestCalcScore_RequestBodyRequiredAdded(t *testing.T) {
-	weights := delta.NewWeights()
+	weights := delta.EmptyWeights()
 	weights.RequestBodyRequired = 1.0
 
 	gt := map[string]delta.Endpoint{
@@ -137,7 +137,7 @@ func TestCalcScore_RequestBodyRequiredAdded(t *testing.T) {
 }
 
 func TestCalcScore_RequestBodyContentSchemaFound(t *testing.T) {
-	weights := delta.NewWeights()
+	weights := delta.EmptyWeights()
 	weights.RequestBodyContent = 1.0
 
 	gt := map[string]delta.Endpoint{
@@ -172,7 +172,7 @@ func TestCalcScore_RequestBodyContentSchemaFound(t *testing.T) {
 }
 
 func TestCalcScore_RequestBodyContentSchemaNotFound(t *testing.T) {
-	weights := delta.NewWeights()
+	weights := delta.EmptyWeights()
 	weights.RequestBodyContent = 1.0
 
 	gt := map[string]delta.Endpoint{
