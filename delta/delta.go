@@ -89,7 +89,7 @@ func EmptyWeights() Weights {
 	}
 }
 
-func CalcScoreFiles(basePath string, revisionPath string) float64 {
+func CalcScoreFromFiles(basePath string, revisionPath string) float64 {
 	sl := openapi3.NewLoader()
 	baseSpec, _ := sl.LoadFromFile(basePath)
 	revisionSpec, _ := sl.LoadFromFile(revisionPath)
