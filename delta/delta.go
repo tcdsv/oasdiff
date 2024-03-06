@@ -32,22 +32,12 @@ type RequestBody struct {
 	Required bool
 }
 
-func (r RequestBody) hasContent(contentType string) bool {
-	_, exists := r.Contents[contentType]
-	return exists
-}
-
 type Content struct {
 	Schema *openapi3.Schema
 }
 
 type Response struct {
 	Content map[string]Content
-}
-
-func (r Response) hasContent(contentType string) bool {
-	_, exists := r.Content[contentType]
-	return exists
 }
 
 type endpoints map[string]Endpoint
@@ -104,8 +94,3 @@ func CalcScore(weights Weights, gt endpoints, spec endpoints) float64 {
 		responses +
 		responsesContent
 }
-
-// func parameterExists(param string, parameters map[string]Parameter) bool {
-// 	_, exists := parameters[param]
-// 	return exists
-// }

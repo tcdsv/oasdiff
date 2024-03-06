@@ -42,9 +42,7 @@ func TestCalcScore_RequestBodyAdded(t *testing.T) {
 
 	spec := map[string]delta.Endpoint{
 		delta.GetPathKey(http.MethodGet, "/path"): {
-			RequestBody: &delta.RequestBody{
-				Required: false,
-			},
+			RequestBody: &delta.RequestBody{},
 		},
 	}
 
@@ -58,9 +56,7 @@ func TestCalcScore_RequestBodyRemoved(t *testing.T) {
 
 	gt := map[string]delta.Endpoint{
 		delta.GetPathKey(http.MethodGet, "/path"): {
-			RequestBody: &delta.RequestBody{
-				Required: false,
-			},
+			RequestBody: &delta.RequestBody{},
 		},
 	}
 
@@ -96,7 +92,7 @@ func TestCalcScore_RequestBodyRequiredFound(t *testing.T) {
 	require.Equal(t, 1.0, delta.CalcScore(weights, gt, spec))
 }
 
-func TestCalcScore_RequestBodyNotFound(t *testing.T) {
+func TestCalcScore_RequestBodyRequiredRemoved(t *testing.T) {
 	weights := delta.NewWeights()
 	weights.RequestBodyRequired = 1.0
 
@@ -105,6 +101,27 @@ func TestCalcScore_RequestBodyNotFound(t *testing.T) {
 			RequestBody: &delta.RequestBody{
 				Required: false,
 			},
+		},
+	}
+
+	spec := map[string]delta.Endpoint{
+		delta.GetPathKey(http.MethodGet, "/path"): {
+			RequestBody: &delta.RequestBody{
+				Required: true,
+			},
+		},
+	}
+
+	require.Equal(t, 0.0, delta.CalcScore(weights, gt, spec))
+}
+
+func TestCalcScore_RequestBodyRequiredAdded(t *testing.T) {
+	weights := delta.NewWeights()
+	weights.RequestBodyRequired = 1.0
+
+	gt := map[string]delta.Endpoint{
+		delta.GetPathKey(http.MethodGet, "/path"): {
+			RequestBody: nil,
 		},
 	}
 
@@ -128,7 +145,7 @@ func TestCalcScore_RequestBodyContentSchemaFound(t *testing.T) {
 			RequestBody: &delta.RequestBody{
 				Contents: map[string]delta.Content{
 					delta.ContentTypeJSON: {
-						&openapi3.Schema{
+						Schema: &openapi3.Schema{
 							Type: "string",
 						},
 					},
@@ -142,7 +159,7 @@ func TestCalcScore_RequestBodyContentSchemaFound(t *testing.T) {
 			RequestBody: &delta.RequestBody{
 				Contents: map[string]delta.Content{
 					delta.ContentTypeJSON: {
-						&openapi3.Schema{
+						Schema: &openapi3.Schema{
 							Type: "string",
 						},
 					},
@@ -163,7 +180,7 @@ func TestCalcScore_RequestBodyContentSchemaNotFound(t *testing.T) {
 			RequestBody: &delta.RequestBody{
 				Contents: map[string]delta.Content{
 					delta.ContentTypeJSON: {
-						&openapi3.Schema{
+						Schema: &openapi3.Schema{
 							Type: "string",
 						},
 					},
@@ -177,42 +194,7 @@ func TestCalcScore_RequestBodyContentSchemaNotFound(t *testing.T) {
 			RequestBody: &delta.RequestBody{
 				Contents: map[string]delta.Content{
 					delta.ContentTypeJSON: {
-						&openapi3.Schema{
-							Type: "object",
-						},
-					},
-				},
-			},
-		},
-	}
-
-	require.Equal(t, 0.0, delta.CalcScore(weights, gt, spec))
-}
-
-func TestCalcScore_RequestBodyContentSchemaNotFoundNil(t *testing.T) {
-	weights := delta.NewWeights()
-	weights.RequestBodyContent = 1.0
-
-	gt := map[string]delta.Endpoint{
-		delta.GetPathKey(http.MethodGet, "/path"): {
-			RequestBody: &delta.RequestBody{
-				Contents: map[string]delta.Content{
-					delta.ContentTypeJSON: {
-						&openapi3.Schema{
-							Type: "string",
-						},
-					},
-				},
-			},
-		},
-	}
-
-	spec := map[string]delta.Endpoint{
-		delta.GetPathKey(http.MethodGet, "/path"): {
-			RequestBody: &delta.RequestBody{
-				Contents: map[string]delta.Content{
-					delta.ContentTypeJSON: {
-						&openapi3.Schema{
+						Schema: &openapi3.Schema{
 							Type: "object",
 						},
 					},

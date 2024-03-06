@@ -2,7 +2,7 @@ package delta
 
 func calcScoreRequestBody(gt endpoints, spec endpoints) float64 {
 
-	total := len(gt) // ?
+	total := len(gt)
 
 	found := 0
 	for endpointName, gtEndpoint := range gt {
@@ -10,10 +10,6 @@ func calcScoreRequestBody(gt endpoints, spec endpoints) float64 {
 			continue
 		}
 		specEndpoint := spec[endpointName]
-
-		if gtEndpoint.RequestBody == nil && specEndpoint.RequestBody == nil {
-			found++
-		}
 		if gtEndpoint.RequestBody != nil && specEndpoint.RequestBody != nil {
 			found++
 		}
@@ -97,27 +93,5 @@ func calcScoreRequestBodyContents(gt endpoints, spec endpoints) float64 {
 			}
 		}
 	}
-
-	// added := 0
-	// for specEndpointName, specEndpoint := range spec {
-	// 	if !endpointExists(specEndpointName, gt) {
-	// 		continue
-	// 	}
-	// 	specRequestBody := specEndpoint.RequestBody
-	// 	if specRequestBody == nil {
-	// 		continue
-	// 	}
-	// 	gtRequestBody := gt[specEndpointName].RequestBody
-	// 	if gtRequestBody == nil {
-	// 		continue
-	// 	}
-	// 	for specContentType, specContent := range specRequestBody.Contents {
-	// 		gtContent, exists := gtRequestBody.Contents[specContentType]
-	// 		if exists && !isContentEqual(gtContent, specContent) {
-	// 			added++
-	// 		}
-	// 	}
-	// }
-
 	return calcScore(total, found, 0)
 }
