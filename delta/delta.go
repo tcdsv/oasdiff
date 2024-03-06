@@ -89,6 +89,15 @@ func EmptyWeights() Weights {
 	}
 }
 
+func CalcScoreFiles(basePath string, revisionPath string) float64 {
+	sl := openapi3.NewLoader()
+	baseSpec, _ := sl.LoadFromFile(basePath)
+	revisionSpec, _ := sl.LoadFromFile(revisionPath)
+	gt := Build(baseSpec)
+	spec := Build(revisionSpec)
+	return CalcScore(DefaultWeights(), gt, spec)
+}
+
 func CalcScore(weights Weights, gt Endpoints, spec Endpoints) float64 {
 	endpoints := weights.Endpoints * calcScoreEndpoints(gt, spec)
 	parameters := weights.Parameters * calcScoreParams(gt, spec)
