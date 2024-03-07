@@ -2,16 +2,28 @@ package delta
 
 import (
 	"github.com/getkin/kin-openapi/openapi3"
+	"github.com/sirupsen/logrus"
 	"github.com/tufin/oasdiff/diff"
 )
 
 func isContentEqual(gt Content, spec Content) bool {
-	gtRef := &openapi3.SchemaRef{
+
+	if gt.Schema == nil && spec.Schema == nil {
+		return true
+	}
+	if (gt.Schema == nil && spec.Schema != nil) || (gt.Schema != nil && spec.Schema == nil) {
+		return false
+	}
+
+	res, err := diff.GetSchemaDiff2(&openapi3.SchemaRef{
 		Value: gt.Schema,
-	}
-	resultRef := &openapi3.SchemaRef{
+	}, &openapi3.SchemaRef{
 		Value: spec.Schema,
+	})
+	if err != nil {
+		logrus.Errorf("failed to get schema diff with '%s'", err)
+		return false
 	}
-	res, _ := diff.GetSchemaDiff2(gtRef, resultRef)
+
 	return res.Empty()
 }

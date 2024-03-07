@@ -12,7 +12,7 @@ func calcScoreResponses(gt Endpoints, spec Endpoints) float64 {
 			continue
 		}
 		specResponses := spec[gtEndpointName].Responses
-		for gtResponseCode, _ := range gtEndpoint.Responses {
+		for gtResponseCode := range gtEndpoint.Responses {
 			_, exists := specResponses[gtResponseCode]
 			if exists {
 				found++
@@ -26,7 +26,7 @@ func calcScoreResponses(gt Endpoints, spec Endpoints) float64 {
 			continue
 		}
 		gtResponses := gt[specEndpointName].Responses
-		for specResponseCode, _ := range specEndpoint.Responses {
+		for specResponseCode := range specEndpoint.Responses {
 			_, exists := gtResponses[specResponseCode]
 			if !exists {
 				added++
