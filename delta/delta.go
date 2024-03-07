@@ -1,6 +1,7 @@
 package delta
 
 import (
+	"log/slog"
 	"strconv"
 
 	"github.com/getkin/kin-openapi/openapi3"
@@ -89,13 +90,23 @@ func EmptyWeights() Weights {
 	}
 }
 
-func CalcScoreFiles(basePath string, revisionPath string) float64 {
+func CalcScoreFiles(basePath string, revisionPath string) (float64, error) {
+
 	sl := openapi3.NewLoader()
-	baseSpec, _ := sl.LoadFromFile(basePath)
-	revisionSpec, _ := sl.LoadFromFile(revisionPath)
-	gt := Build(baseSpec)
-	spec := Build(revisionSpec)
-	return CalcScore(DefaultWeights(), gt, spec)
+
+	baseSpec, err := sl.LoadFromFile(basePath)
+	if err != nil {
+		slog.Error("failed to load base spec", "error", err)
+		return -1, err
+	}
+
+	revisionSpec, err := sl.LoadFromFile(revisionPath)
+	if err != nil {
+		slog.Error("failed to load revision spec", "error", err)
+		return -1, err
+	}
+
+	return CalcScore(DefaultWeights(), Build(baseSpec), Build(revisionSpec)), nil
 }
 
 func CalcScore(weights Weights, gt Endpoints, spec Endpoints) float64 {
