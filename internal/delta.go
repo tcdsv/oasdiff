@@ -48,10 +48,19 @@ func runDelta(flags Flags, stdout io.Writer) (bool, *ReturnError) {
 		return false, getErrFailedToLoadSpec("revision", flags.getRevision(), err)
 	}
 
-	gt := delta.Build(s1.Spec)
-	spec := delta.Build(s2.Spec)
+	gt, err := delta.Build(s1.Spec)
+	if err != nil {
+		fmt.Fprintf(stdout, "%s", err.Error())
+		return false, nil
+	}
+	spec, err := delta.Build(s2.Spec)
+	if err != nil {
+		fmt.Fprintf(stdout, "%s", err.Error())
+		return false, nil
+	}
 
 	weights := delta.DefaultWeights()
 	_, _ = fmt.Fprintf(stdout, "%g\n", delta.CalcScore(weights, gt, spec))
 	return false, nil
 }
+

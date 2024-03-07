@@ -106,7 +106,19 @@ func CalcScoreFromFiles(weights Weights, basePath string, revisionPath string) (
 		return -1, err
 	}
 
-	return CalcScore(weights, Build(baseSpec), Build(revisionSpec)), nil
+	gt, err := Build(baseSpec)
+	if err != nil {
+		slog.Error("failed to build endpoints", "error", err)
+		return -1, err
+	}
+	
+	spec, err := Build(revisionSpec)
+	if err != nil {
+		slog.Error("failed to build endpoints", "error", err)
+		return -1, err
+	}
+	
+	return CalcScore(weights, gt, spec), nil
 }
 
 func CalcScore(weights Weights, gt Endpoints, spec Endpoints) float64 {

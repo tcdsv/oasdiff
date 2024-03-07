@@ -1,19 +1,30 @@
 package delta
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/getkin/kin-openapi/openapi3"
 )
 
-func Build(spec *openapi3.T) Endpoints {
+func Build(spec *openapi3.T) (Endpoints, error) {
 	ep := make(Endpoints)
 
 	for path, v := range spec.Paths.Map() {
+		basepath, err := spec.Servers.BasePath()
+
+		if err != nil {
+			return nil, fmt.Errorf("failed to create endpoints. error: %s", err.Error())
+		}
+
+		if basepath != "/" {
+			path = basepath + path
+		}
+		
 		extractPath(path, *v, ep)
 	}
 
-	return ep
+	return ep, nil
 }
 
 func extractPath(path string, pathItem openapi3.PathItem, ep Endpoints) {
