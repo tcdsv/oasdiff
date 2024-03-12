@@ -46,8 +46,23 @@ func getValueDiffConditional(exclude bool, value1, value2 interface{}) *ValueDif
 	return getValueDiff(value1, value2)
 }
 
+func getFloat64RefDiffConditional(exclude bool, value1, value2 *float64) *ValueDiff {
+	if exclude {
+		return nil
+	}
+
+	return getFloat64RefDiff(value1, value2)
+}
+ 
 func getFloat64RefDiff(valueRef1, valueRef2 *float64) *ValueDiff {
 	return getValueDiff(derefFloat64(valueRef1), derefFloat64(valueRef2))
+}
+
+func getBoolRefDiffConditional(exclude bool ,valueRef1, valueRef2 *bool) *ValueDiff {
+	if exclude {
+		return nil
+	}
+	return getBoolRefDiff(valueRef1, valueRef2)
 }
 
 func getBoolRefDiff(valueRef1, valueRef2 *bool) *ValueDiff {
@@ -56,6 +71,14 @@ func getBoolRefDiff(valueRef1, valueRef2 *bool) *ValueDiff {
 
 func getStringRefDiffConditional(exclude bool, valueRef1, valueRef2 *string) *ValueDiff {
 	return getValueDiffConditional(exclude, derefString(valueRef1), derefString(valueRef2))
+}
+
+func getUInt64RefDiffConditional(exclude bool, value1, value2 *uint64) *ValueDiff {
+	if exclude {
+		return nil
+	}
+
+	return getUInt64RefDiff(value1, value2)
 }
 
 func getUInt64RefDiff(valueRef1, valueRef2 *uint64) *ValueDiff {
