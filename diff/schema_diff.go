@@ -144,7 +144,7 @@ func getSchemaDiffInternal(config *Config, state *state, schema1, schema2 *opena
 	}
 	result.TypeDiff = getValueDiff(value1.Type, value2.Type)
 	result.TitleDiff = getValueDiffConditional(config.IsExcludeTitle(), value1.Title, value2.Title)
-	result.FormatDiff = getValueDiff(value1.Format, value2.Format)
+	result.FormatDiff = GetEquivalentDiff(config.IsEquivalentFormat(), value1.Format, value2.Format)
 	result.DescriptionDiff = getValueDiffConditional(config.IsExcludeDescription(), value1.Description, value2.Description)
 	result.EnumDiff = getEnumDiff(config, state, value1.Enum, value2.Enum)
 	result.DefaultDiff = getValueDiff(value1.Default, value2.Default)

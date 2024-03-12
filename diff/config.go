@@ -15,6 +15,7 @@ type Config struct {
 	PathStripPrefixRevision string
 	ExcludeElements         utils.StringSet
 	IncludePathParams       bool
+	EquivalenElements       utils.StringSet
 }
 
 const (
@@ -23,6 +24,7 @@ const (
 	ExcludeEndpointsOption   = "endpoints"
 	ExcludeTitleOption       = "title"
 	ExcludeSummaryOption     = "summary"
+	EquivalentFormat         = "format"
 )
 
 var ExcludeDiffOptions = []string{
@@ -38,6 +40,7 @@ func NewConfig() *Config {
 	return &Config{
 		IncludeExtensions: utils.StringSet{},
 		ExcludeElements:   utils.StringSet{},
+		EquivalenElements: utils.StringSet{},
 	}
 }
 
@@ -65,6 +68,10 @@ func (config *Config) IsExcludeTitle() bool {
 func (config *Config) IsExcludeSummary() bool {
 	return config.ExcludeElements.Contains(ExcludeSummaryOption)
 }
+
+func (config *Config) IsEquivalentFormat() bool {
+	return config.EquivalenElements.Contains(EquivalentFormat)
+} 
 
 const (
 	SunsetExtension          = "x-sunset"

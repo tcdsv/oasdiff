@@ -3,6 +3,7 @@ package diff
 import (
 	"fmt"
 	"reflect"
+	"strings"
 )
 
 // ValueDiff describes the changes between a pair of values
@@ -44,6 +45,24 @@ func getValueDiffConditional(exclude bool, value1, value2 interface{}) *ValueDif
 	}
 
 	return getValueDiff(value1, value2)
+}
+
+func GetEquivalentDiff(equivalent bool, value1, value2 interface{}) *ValueDiff {
+	if !equivalent {
+		return getValueDiff(value1, value2)
+	}
+	return getValueDiff(getEquivalentValue(value1), getEquivalentValue(value2))
+}
+
+func getEquivalentValue(value interface{}) interface{} {
+	v, ok := value.(string)
+	if !ok {
+		return value
+	}
+	if strings.HasPrefix(v, "int") {
+		v = "int"
+	}
+	return v
 }
 
 func getFloat64RefDiff(valueRef1, valueRef2 *float64) *ValueDiff {
