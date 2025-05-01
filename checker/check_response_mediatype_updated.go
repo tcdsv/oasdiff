@@ -29,9 +29,6 @@ func ResponseMediaTypeUpdatedCheck(diffReport *diff.Diff, operationsSources *dif
 				if responsesDiff.ContentDiff == nil {
 					continue
 				}
-				if responsesDiff.ContentDiff.MediaTypeDeleted == nil {
-					continue
-				}
 				for _, mediaType := range responsesDiff.ContentDiff.MediaTypeDeleted {
 					result = append(result, NewApiChange(
 						ResponseMediaTypeRemovedId,
