@@ -51,5 +51,5 @@ Notes:
 2. After an `x-sunset` extension is specified, it can only be changed to a future date which respects the sunset grace period relative to date of the change.
 
 ### Supported Resources for Deprecation
-OpenAPI 3 supports the `deprecation` field for `Operations`, `Parameters` and `Headers`.  
+OpenAPI 3 supports the `deprecation` field for `Operations`, `Parameters`, `Headers` and `Schemas`.  
 Oasdiff currently supports deprecation for `Operations` and `Parameters`.  
